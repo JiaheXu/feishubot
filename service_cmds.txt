@@ -1,0 +1,5 @@
+systemctl --user restart feishubot.service
+journalctl --user -u feishubot.service -f
+
+systemctl --user daemon-reload
+systemctl --user enable --now feishubot.service

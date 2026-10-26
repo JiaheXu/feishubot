@@ -1,0 +1,6 @@
+[
+  {
+    "message_id": "direct-scaling-online-exploration",
+    "content": "Scaling Online Exploration for Robot Agents\nhttps://arxiv.org/abs/2610.22496\n让robot通过实际尝试，把经验积累成perception、planning和control程序。参数保持不变，持续改进的是code、notes和skill library"
+  }
+]

@@ -1,0 +1,11 @@
+.env
+.env.*
+!.env.example
+.venv/
+__pycache__/
+*.jsonl
+messages.txt
+analyses/
+papers/
+local_env.sh
+.monitor.lock

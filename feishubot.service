@@ -1,0 +1,17 @@
+[Unit]
+Description=Feishu paper summary bot
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+WorkingDirectory=/home/jiahe/feishubot
+ExecStart=/home/jiahe/feishubot/launch.sh
+Environment=PYTHONUNBUFFERED=1
+UMask=0077
+Restart=always
+RestartSec=10
+KillSignal=SIGINT
+TimeoutStopSec=35min
+
+[Install]
+WantedBy=default.target

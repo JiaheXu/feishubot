@@ -1,0 +1,54 @@
+[
+  {
+    "message_id": "history-scaling-online-exploration",
+    "content": "Scaling Online Exploration for Robot Agents\n让robot通过实际尝试，把经验积累成perception、planning和control程序。参数保持不变，持续改进的是code、notes和skill library"
+  },
+  {
+    "message_id": "history-rhoda-touch",
+    "content": "https://www.rhoda.ai/research/giving-robots-a-sense-of-touch\nrhoda最新的blog 在video-action model后训练加入触觉信息"
+  },
+  {
+    "message_id": "history-motubrain-live",
+    "content": "https://www.motubrain.com/motubrain2.0-live/\nPhysical AI训练流程的直播"
+  },
+  {
+    "message_id": "history-real2sim2real-2610-30097",
+    "content": "https://arxiv.org/abs/2610.30097\nreal2sim2real, 到 sim 之后也会比较方便进行 RL训练，然后这篇通过语义门控限制失败子任务的 TD 残差跨边界传播，减轻长程强化学习中的信用分配污染，并按子任务掌握程度调整采样和探索。"
+  },
+  {
+    "message_id": "history-manimux",
+    "content": "https://github.com/SII-LiuLab/manimux\nGitHub - SII-LiuLab/manimux: Extensible Real-world Manipulation Harness\n很多很好的部署trick，可以学习一下"
+  },
+  {
+    "message_id": "history-arxiv-2610-28480",
+    "content": "https://arxiv.org/pdf/2610.28480"
+  },
+  {
+    "message_id": "history-scaling-online-exploration-linked",
+    "content": "Scaling Online Exploration for Robot Agents\nhttps://robot-agent-exploration.com/\nhttps://assets.robot-agent-exploration.com/paper/rax.pdf\n让robot通过实际尝试，把经验积累成perception、planning和control程序。参数保持不变，持续改进的是code、notes和skill library"
+  },
+  {
+    "message_id": "history-dream-1",
+    "content": "https://dreamlabs.ai/research/dream-1/\n看起来像是DreamZero的延续，到cross embodiment。比较有意思的是他们开放了api，Dream-1 约 $3/小时，Dream-1-flash 约 $2/小时，说是在新的双臂夹爪上有一定泛化能力"
+  },
+  {
+    "message_id": "history-flora",
+    "content": "project page: https://research.nvidia.com/labs/gear/flora/\nX: https://x.com/DrJimFan/status/2112597587987689912\nNvidia 基于qwen3.5做的数据标注工具（claim Astra-level performance）"
+  },
+  {
+    "message_id": "history-robota-embed",
+    "content": "Robota-Embed: Unified VLA Embeddings for Robot In-Context Learning and Evolution\nhttps://arxiv.org/pdf/2610.19495\nhttps://robota-ai.github.io/robota-embed/\n让robot根据“当前task、看到的scene、正在执行的action”，从经验库中找到此刻最有用的后续片段，再把它作为policy的上下文。\n以 Cosmos3-Edge 4B 为底座，Query 和 Target 共享主干，分别使用小型 adapter。语言、视觉和动作融合后，最终压缩成一个 1024 维向量，用 cosine similarity 排序。\nEmbed2ICL：检索到了经验，策略使用；\nEmbed2Evolve：把经验库扩展成跨 episode 的记忆"
+  },
+  {
+    "message_id": "history-microsoft-frontier-pretraining",
+    "content": "https://microsoft.ai/news/frontier-pre-training-at-microsoft-ai/"
+  },
+  {
+    "message_id": "history-t2z",
+    "content": "https://t2-z-latent-optimization.github.io/\n这个和我之前在学校里做的东西很像，通过world model在历史中反映出一些信息，然后根据这些信息做adaptation，但是他们貌似还没有证明这些信息可以被e2e policy使用"
+  },
+  {
+    "message_id": "history-aspire-pdf-test-msg",
+    "content": "{\"title\": \"\", \"content\": [[{\"tag\": \"a\", \"href\": \"https://research.nvidia.com/labs/gear/aspire/assets/aspire.pdf?v=20261016\", \"text\": \"https://research.nvidia.com/labs/gear/aspire/assets/aspire.pdf?v=20261016\", \"style\": []}, {\"tag\": \"text\", \"text\": \" test msg\", \"style\": []}]], \"content_v2\": [[{\"tag\": \"a\", \"href\": \"https://research.nvidia.com/labs/gear/aspire/assets/aspire.pdf?v=20261016\", \"text\": \"https://research.nvidia.com/labs/gear/aspire/assets/aspire.pdf?v=20261016\", \"style\": []}, {\"tag\": \"text\", \"text\": \" test msg\", \"style\": []}]]}"
+  }
+]
