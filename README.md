@@ -1,9 +1,10 @@
 # Feishu paper group monitor
 
-A Python listener and paper-summary bot for **paper分享**. It prints each message's text
+A Python listener and paper-summary bot for **paper分享** and private chats with the bot. It prints each message's text
 to the terminal and appends the same text to **messages.txt** in the current
 working directory. Successful summaries are sent as threaded replies to the
-original message, and are also printed and saved locally.
+original group message, or ordinary replies in the same private chat, and are
+also printed and saved locally.
 
 Research messages are analyzed in a background worker using **gpt-6-astra**
 through your local OpenAI-compatible proxy. Research messages use two AI stages:
@@ -37,6 +38,8 @@ instead of pretending to monitor the group.
    skipped with `--chat-id`.
    For summary replies, also grant **以应用的身份发消息**
    (`im:message:send_as_bot`), then publish and approve the updated app version.
+   For private messages, grant **读取用户发给机器人的单聊消息**
+   (`im:message.p2p_msg:readonly`) as well.
 3. Configure event delivery to **使用长连接接收事件** and subscribe to
    **接收消息 v2.0** (`im.message.receive_v1`). No public HTTP server is needed.
    Feishu may require the listener to be connected before saving this setting;
@@ -45,6 +48,23 @@ instead of pretending to monitor the group.
    add the app bot to **paper分享**.
 5. Set app credentials in your local runtime environment. See `.env.example`
    for variable names; do not commit real values.
+
+### Private conversations
+
+After publishing the private-message permission, users within the app's
+availability scope can search for the bot in Feishu, open its profile, and
+start a private chat. Send a paper title, paper/report link, or rich-text post;
+the bot uses the same Chinese paper-summary pipeline and replies only to that
+message in that private chat. No @mention or command is needed. Ordinary
+chatter is skipped; this does not add general-purpose AI conversation.
+
+Private messages use the existing local logging and archive behavior:
+message text is printed and saved to `messages.txt`, summaries and diagnostics
+go to `analyses/`, and paper PDFs go to `papers/`. Private summaries are not
+forwarded to the monitored group. Bot messages, quoted replies, duplicates,
+and startup history do not trigger analysis. The existing group configuration
+is still required at startup. Keep `im.message.receive_v1` subscribed and
+restart the service after updating the code.
 
 ## Run locally
 
@@ -96,7 +116,7 @@ Credentials, network access and the local AI proxy must remain available.
 
 Paper summaries are enabled by default. The startup line confirms the character
 limit and report directory. Each accepted live message is logged and queued
-once by the monitor; duplicates, other chats, replies and startup history are not queued.
+once by the monitor; duplicates, other groups, replies and startup history are not queued.
 Replies are identified by `parent_id` or a `root_id` pointing to another message;
 a `thread_id` alone does not exclude an original topic post. Replies remain in the raw log.
 The background worker finds and verifies sources, then generates the Chinese
@@ -306,8 +326,8 @@ select the intended group explicitly using its chat ID:
 .venv/bin/python monitor.py --chat-id oc_your_group_id
 ```
 
-Messages from the selected ordinary group or topic group are written. Other groups and private
-messages are ignored. Text messages are saved without their JSON wrapper,
+Messages from the selected ordinary group or topic group and private chats
+with the bot are written. Other groups are ignored. Text messages are saved without their JSON wrapper,
 preserving Unicode and line breaks. Other message types and unparseable text
 are printed and saved as the raw `content` string from Feishu. Files/images
 remain Feishu resource keys and are not downloaded. Sender metadata and the

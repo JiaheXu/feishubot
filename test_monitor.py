@@ -327,12 +327,44 @@ class MonitorTests(unittest.TestCase):
         self.assertEqual(self.output.getvalue(), "论文分享\n")
         self.assertEqual(jobs.get_nowait(), self.event["event"]["message"])
 
-    def test_other_group_and_direct_messages_are_ignored(self):
-        for changes in ({"chat_id": "oc_other"}, {"chat_type": "p2p"}):
+    def test_other_groups_and_unknown_chat_types_are_ignored(self):
+        for changes in ({"chat_id": "oc_other"}, {"chat_type": "unknown"}):
             event = copy.deepcopy(self.event)
             event["event"]["message"].update(changes)
             self.listener.handle(event)
         self.assertEqual(self.output.getvalue(), "")
+        self.assertFalse(self.log_path.exists())
+
+    def test_private_messages_from_different_chats_are_queued_once(self):
+        jobs = queue.SimpleQueue()
+        self.listener.worker = SimpleNamespace(submit=jobs.put)
+        for index in (1, 2):
+            event = copy.deepcopy(self.event)
+            event["event"]["message"].update(
+                chat_type="p2p", chat_id=f"oc_private_{index}", message_id=f"om_private_{index}")
+            self.listener.handle(event)
+            self.listener.handle(event)
+        self.assertEqual(jobs.qsize(), 2)
+        self.assertEqual([jobs.get_nowait()["chat_id"] for _ in range(2)],
+                         ["oc_private_1", "oc_private_2"])
+        self.assertEqual(self.log_path.read_text(), "论文分享\n论文分享\n")
+
+    def test_private_bot_messages_replies_and_history_do_not_trigger_analysis(self):
+        jobs = queue.SimpleQueue()
+        self.listener.worker = SimpleNamespace(submit=jobs.put)
+        for index, fields in enumerate(({}, {"parent_id": "om_parent"}, {"root_id": "om_root"}, {})):
+            event = copy.deepcopy(self.event)
+            event["event"]["message"].update(
+                chat_type="p2p", chat_id="oc_private", message_id=f"om_private_{index}", **fields)
+            if index == 0:
+                event["event"]["sender"]["sender_type"] = "app"
+            self.listener.handle(event, history=index == 3)
+        self.assertTrue(jobs.empty())
+        self.assertEqual(len(self.log_path.read_text().splitlines()), 4)
+
+    def test_private_message_without_chat_id_is_ignored(self):
+        self.event["event"]["message"].update(chat_type="p2p", chat_id="")
+        self.assertIsNone(self.listener.handle(self.event))
         self.assertFalse(self.log_path.exists())
 
     def test_all_delivered_message_types_are_preserved(self):

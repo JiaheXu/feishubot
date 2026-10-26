@@ -1,4 +1,4 @@
-"""Monitor a Feishu group and reply with paper summaries. Credentials are read only by main()."""
+"""Monitor a Feishu group and private chats for paper summaries. Credentials are read only by main()."""
 
 import argparse
 from collections import OrderedDict
@@ -140,7 +140,8 @@ def reply_summary(client, message, summary):
             or any(label not in summary for label in ("问题：", "创新：", "方法：", "结果：", "局限性（AI 分析）："))):
         raise ValueError("Only a complete Chinese paper summary within the character limit can be sent.")
     body = (ReplyMessageRequestBody.builder().msg_type("post")
-            .content(json.dumps(summary_post(summary), ensure_ascii=False)).reply_in_thread(True)
+            .content(json.dumps(summary_post(summary), ensure_ascii=False))
+            .reply_in_thread(message.get("chat_type") != "p2p")
             .uuid("paper-summary-" + hashlib.sha256(message_id.encode()).hexdigest()[:32]).build())
     request = ReplyMessageRequest.builder().message_id(message_id).request_body(body).build()
     try:
@@ -152,7 +153,7 @@ def reply_summary(client, message, summary):
             raise RuntimeError(f"Feishu reply failed (code {response.code}): the original message was recalled "
                                "or its topic no longer exists; the report is saved locally.")
         raise RuntimeError(f"Feishu reply failed (code {response.code}); check im:message:send_as_bot, "
-                           "app publication and group access.")
+                           "app publication and chat access.")
 
 
 class MessageMonitor:
@@ -169,8 +170,10 @@ class MessageMonitor:
         event = payload.get("event") or {}
         message = event.get("message") or {}
         message_id = message.get("message_id")
-        if (message.get("chat_type") not in ("group", "topic_group")
-                or message.get("chat_id") != self.chat_id or not message_id):
+        chat_type = message.get("chat_type")
+        if (not message_id or not message.get("chat_id")
+                or chat_type not in ("group", "topic_group", "p2p")
+                or (chat_type != "p2p" and message.get("chat_id") != self.chat_id)):
             return
         with self.lock:
             if message_id in self.seen:
@@ -332,7 +335,7 @@ def run_live(args):
                .register_p2_im_message_receive_v1(on_message)
                .register_p2_im_message_reaction_created_v1(lambda data: None)
                .register_p2_im_message_reaction_deleted_v1(lambda data: None).build())
-    print(f"Listening for group messages in {chat_id}; "
+    print(f"Listening for group messages in {chat_id} and private messages to the bot; "
           f"summary replies {'disabled' if worker is None else 'enabled'}.", file=sys.stderr)
     try:
         lark.ws.Client(app_id, app_secret, event_handler=handler,

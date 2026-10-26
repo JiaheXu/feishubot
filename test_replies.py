@@ -14,6 +14,16 @@ SUMMARY = "论文\n• 问题：适应新任务。\n• 创新：复用技能。
 
 
 class ReplyTests(unittest.TestCase):
+    def test_private_summary_replies_to_original_without_creating_a_thread(self):
+        client = Mock()
+        client.im.v1.message.reply.return_value = SimpleNamespace(success=lambda: True, code=0)
+        monitor.reply_summary(client, {
+            "chat_type": "p2p", "chat_id": "oc_private", "message_id": "om_private"}, SUMMARY)
+        request = client.im.v1.message.reply.call_args.args[0]
+        self.assertEqual(request.paths["message_id"], "om_private")
+        self.assertFalse(request.body.reply_in_thread)
+        self.assertEqual(request.body.msg_type, "post")
+
     def test_reply_targets_original_message_and_uses_stable_deduplication_id(self):
         client = Mock()
         client.im.v1.message.reply.return_value = SimpleNamespace(success=lambda: True, code=0)
