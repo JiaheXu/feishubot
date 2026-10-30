@@ -211,14 +211,14 @@ class AnalyzerTests(unittest.TestCase):
 
     def test_oversized_summary_is_shortened_once_instead_of_printing_a_long_report(self):
         with patch.object(self.analyzer, "_chat", side_effect=[
-                {"content": "x" * 1001}, {"content": "New idea: compact summary. Results: 42."}]) as chat:
+                {"content": "x" * 2001}, {"content": "New idea: compact summary. Results: 42."}]) as chat:
             summary = self.analyzer._complete([self.source], "paper")
-        self.assertLessEqual(len(summary), 1000)
+        self.assertLessEqual(len(summary), 2000)
         self.assertEqual(chat.call_count, 2)
 
-    def test_summary_at_1000_character_boundary_is_not_shortened(self):
+    def test_summary_at_2000_character_boundary_is_not_shortened(self):
         text = "本摘要由 gpt-6-astra 生成\n"
-        text += "中" * (1000 - len(text))
+        text += "中" * (2000 - len(text))
         with patch.object(self.analyzer, "_chat", return_value={"content": text}) as chat:
             summary = self.analyzer._complete([self.source], "paper")
         self.assertEqual(summary, text)

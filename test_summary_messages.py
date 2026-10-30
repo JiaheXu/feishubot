@@ -96,7 +96,7 @@ class MessageTests(unittest.TestCase):
                 configure.assert_not_called()
 
     def test_persistently_oversized_ai_output_fails_the_message_check(self):
-        for text in ("word " * 201, "x" * 1001):
+        for text in ("word " * 401, "x" * 2001):
             with self.subTest(text_length=len(text)), \
                     patch("paper_analyzer.archive_papers", return_value=([], [])), \
                     patch.object(self.analyzer, "_chat", return_value={"content": text}):

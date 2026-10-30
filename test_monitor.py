@@ -132,6 +132,27 @@ class MonitorTests(unittest.TestCase):
         self.assertEqual(jobs.get_nowait()["message_id"], "om_original")
         self.assertEqual(self.log_path.read_text().count("论文分享"), 4)
 
+    def test_private_chat_entry_event_is_ignored_by_live_dispatcher(self):
+        import lark_oapi as lark
+
+        payload = json.dumps({
+            "schema": "2.0",
+            "header": {"event_id": "entry-1", "event_type":
+                       "im.chat.access_event.bot_p2p_chat_entered_v1"},
+            "event": {"chat_id": "oc_private", "operator_id": {"open_id": "ou_dummy"}},
+        }).encode()
+        with patch.dict(os.environ, {"PAPER_APP_ID": "cli_test", "PAPER_APP_SECRET": "dummy"}, clear=True), \
+                patch("monitor.__file__", str(self.log_path.parent / "monitor.py")), \
+                patch("sys.argv", ["monitor.py", "--chat-id", "oc_paper", "--no-analysis"]), \
+                patch("monitor.load_history", return_value=0), \
+                patch.object(lark.ws, "Client") as websocket, \
+                redirect_stdout(self.output), redirect_stderr(io.StringIO()):
+            websocket.return_value.start.side_effect = lambda: websocket.call_args.kwargs[
+                "event_handler"]._do_without_validation(payload)
+            monitor.main()
+        self.assertEqual(self.output.getvalue(), "")
+        self.assertFalse(self.log_path.exists())
+
     def test_main_runs_live_event_through_discovery_and_summary_worker(self):
         import lark_oapi as lark
         from paper_analyzer import PaperAnalyzer
@@ -140,7 +161,7 @@ class MonitorTests(unittest.TestCase):
         self.event["event"]["message"]["content"] = json.dumps({"text": url})
         summary = "本摘要由 gpt-6-astra 生成\n论文\n• 问题：适应新任务。\n• 创新：复用经验。\n• 方法：探索后更新程序。\n• 结果：42 对比 30。\n" + url
         summary += "\n• 局限性（AI 分析）：真机泛化尚未验证。"
-        summary += "。" * (1000 - len(summary))
+        summary += "。" * (2000 - len(summary))
         replies = [
             {"role": "assistant", "content": None, "tool_calls": [{
                 "id": "read", "type": "function", "function": {
@@ -158,6 +179,7 @@ class MonitorTests(unittest.TestCase):
         builder.register_p2_im_message_receive_v1.return_value = builder
         builder.register_p2_im_message_reaction_created_v1.return_value = builder
         builder.register_p2_im_message_reaction_deleted_v1.return_value = builder
+        builder.register_p2_im_chat_access_event_bot_p2p_chat_entered_v1.return_value = builder
 
         def deliver():
             with self.assertRaisesRegex(RuntimeError, "already running"):

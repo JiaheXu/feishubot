@@ -89,7 +89,7 @@ class ReplyTests(unittest.TestCase):
     def test_invalid_or_failed_summaries_are_never_sent(self):
         client = Mock()
         for text in ("", "Analysis unavailable: HTTP 403", "Analysis unavailable: " + SUMMARY,
-                     "x" * 1001, "ordinary chatter", SUMMARY.split("\n• 局限性")[0]):
+                     "x" * 2001, "ordinary chatter", SUMMARY.split("\n• 局限性")[0]):
             with self.subTest(text=text), self.assertRaises(ValueError):
                 monitor.reply_summary(client, {"message_id": "om_original"}, text)
         client.im.v1.message.reply.assert_not_called()
@@ -103,9 +103,9 @@ class ReplyTests(unittest.TestCase):
             monitor.reply_summary(client, {"message_id": "om_original"}, SUMMARY)
         self.assertNotIn("private request details", str(caught.exception))
 
-    def test_disclosure_counts_towards_the_1000_character_limit(self):
+    def test_disclosure_counts_towards_the_2000_character_limit(self):
         client = Mock()
-        summary = SUMMARY + "。" * (1000 - len(SUMMARY))
+        summary = SUMMARY + "。" * (2000 - len(SUMMARY))
         with self.assertRaises(ValueError):
             monitor.reply_summary(client, {"message_id": "om_original"}, summary)
         client.im.v1.message.reply.assert_not_called()

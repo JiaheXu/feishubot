@@ -17,7 +17,7 @@ from paper_sources import archive_papers, extract_links
 
 DEFAULT_PROMPT = Path(__file__).with_name("paper_prompt.txt")
 DISCOVERY_PROMPT = Path(__file__).with_name("discovery_prompt.txt")
-MAX_SUMMARY_CHARS = 1000
+MAX_SUMMARY_CHARS = 2000
 SUMMARY_HEADER = "本摘要由 gpt-6-astra 生成"
 SUMMARY_HEADER_RE = re.compile(r"^本摘要由 [^\r\n]+ 生成(?:\n|$)")
 

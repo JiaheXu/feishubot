@@ -334,6 +334,7 @@ def run_live(args):
     handler = (lark.EventDispatcherHandler.builder("", "")
                .register_p2_im_message_receive_v1(on_message)
                .register_p2_im_message_reaction_created_v1(lambda data: None)
+               .register_p2_im_chat_access_event_bot_p2p_chat_entered_v1(lambda data: None)
                .register_p2_im_message_reaction_deleted_v1(lambda data: None).build())
     print(f"Listening for group messages in {chat_id} and private messages to the bot; "
           f"summary replies {'disabled' if worker is None else 'enabled'}.", file=sys.stderr)

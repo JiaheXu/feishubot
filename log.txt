@@ -1,0 +1,16 @@
+Oct 27 10:27:33 zaku launch.sh[1018079]: [Lark] [10-27:33] [ERROR] handle message failed, message_type: event, message_id: 92169c20-29ca-4202-9564-c6c9a2035ab4, trace_id: 65b14a2199c2a8ba35f2f053f998016c, err: processor not found, type: im.chat.access_event.bot_p2p_chat_entered_v1 [conn_id=7701168222608018687]
+Oct 27 10:27:41 zaku launch.sh[1018079]: https://research.nvidia.com/labs/gear/egoscale/
+Oct 27 10:29:18 zaku launch.sh[1018079]: [Lark] [10-29:18] [ERROR] handle message failed, message_type: event, message_id: 6abed79f-c310-416c-9ef0-f09b8ed28b51, trace_id: 65b14a2199c2a8ba35f2f053f998016c, err: processor not found, type: im.chat.access_event.bot_p2p_chat_entered_v1 [conn_id=7701168222608018687]
+Oct 27 10:29:42 zaku launch.sh[1018079]: 本摘要由 gpt-6-astra 生成
+Oct 27 10:29:42 zaku launch.sh[1018079]: EgoScale: Scaling Dexterous Manipulation with Diverse Egocentric Human Data
+Oct 27 10:29:42 zaku launch.sh[1018079]: • 问题：如何用可规模化采集的第一视角人类视频，训练机器人完成分卡、拧盖、注射器转液等高自由度灵巧操作？既有迁移研究多依赖较小数据集或低自由度夹爪，难以同时应对手指精细接触、动作估计噪声及人机感知与运动学差异。
+Oct 27 10:29:42 zaku launch.sh[1018079]: • 创新：将人类数据扩至20,854小时，以手腕运动和手指关节动作直接监督，而非仅学习视觉特征；在测量范围内发现数据量与动作预测验证损失呈对数线性关系，并关联真机表现。通过少量对齐人机数据的中间训练，将大规模预训练与机器人适配分离。
+Oct 27 10:29:42 zaku launch.sh[1018079]: • 方法：视觉—语言—动作模型接收图像、指令及机器人本体状态，以流匹配目标预测未来动作块，输出相对腕部位姿和重定向至Sharpa手的22自由度关节角，轻量输入输出适配器支持不同机体。流程为全参数人类预训练，再用344项任务、约50小时人类与4小时机器人数据中间训练，冻结语言主干、更新视觉编码器和动作专家，最后用目标任务机器人示范微调；部署于配备头部与双腕相机的R1Pro。
+Oct 27 10:29:42 zaku launch.sh[1018079]: • 结果：五项真机任务使用两个训练种子，每项100条示范、卷衣任务20条；不经中间训练时，将人类预训练量从1,000增至20,000小时，平均任务完成分由0.30升至0.71（非成功率），验证损失的对数线性拟合R²=0.9983。对中间训练未见的折衣、拧水瓶任务，预训练＋中间训练后的成功率分别为88%、55%，但每个对象除1条机器人示范外还使用100条对齐人类示范；正文称缺少任一训练阶段的基线均失败，未提供可读取的精确基线数值。
+Oct 27 10:29:42 zaku launch.sh[1018079]: https://arxiv.org/abs/2602.16710
+Oct 27 10:29:42 zaku launch.sh[1018079]: • 局限性（AI 分析）：根据已读全文，单样本适配并非仅靠一条示范，跨机体迁移也使用目标机器人数据，零样本执行尚未验证；作者明确不将扩展规律外推到实测范围之外。AI认为，固定底座、受控初始化及少量真机任务可能限制开放环境结论，且正文与附录的瓶盖试验次数、部分评分细则存在不一致，图表精确基线未被提取，比较仍需谨慎。
+Oct 27 10:29:42 zaku launch.sh[1018079]: Analysis report saved: analyses/20261027T022942439775Z_00d8611e6f7f.md
+Oct 27 10:29:43 zaku launch.sh[1018079]: Summary replied to the original message.
+
+
+adding more logs after received a msg, what is the error msg about?

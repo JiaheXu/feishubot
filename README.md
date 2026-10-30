@@ -120,13 +120,13 @@ once by the monitor; duplicates, other groups, replies and startup history are n
 Replies are identified by `parent_id` or a `root_id` pointing to another message;
 a `thread_id` alone does not exclude an original topic post. Replies remain in the raw log.
 The background worker finds and verifies sources, then generates the Chinese
-**问题 / 创新 / 方法 / 结果 / 局限性（AI 分析）** summary within **1,000 characters** and replies
+**问题 / 创新 / 方法 / 结果 / 局限性（AI 分析）** summary within **2,000 characters** and replies
 under the original message as a rich-text post: a 📄 paper title, emoji and bold
 section headings, spaced paragraphs, and clickable source links. Local reports
 keep their plain-text format. Every saved summary starts with `本摘要由 <模型名称> 生成`,
 using the proxy response's model ID, or the configured `AI_MODEL` / `OPENAI_MODEL`
 when the response omits it;
-this line counts towards the 1,000-character limit. Each original message has a stable reply UUID for
+this line counts towards the 2,000-character limit. Each original message has a stable reply UUID for
 server-side deduplication. App/bot messages remain logged but do not trigger
 analysis, preventing reply loops. Reaction-created/deleted events are ignored.
 Use `--no-analysis` to disable analysis and replies while keeping raw logging.
@@ -177,13 +177,19 @@ The summary is one detailed Chinese reading-group message: original title,
 **⚠️ 局限性（AI 分析）** section. Limitations are explicitly attributed to AI,
 grounded in the available sources, and distinguish reported limitations from
 AI inferences. There is no detailed report or printed discovery/coverage header.
-The limit is **1,000 characters**, including title, URL, newlines and limitations,
+The limit is **2,000 characters**, including title, URL, newlines and limitations,
 with no whitespace word limit; an oversized draft is shortened
 once, then reported as a failure if it still exceeds the limit.
 **Edit `paper_prompt.txt` to change instructions, language, or format.** It is
-reloaded for each request; the body aims for 650–800 Chinese characters when
+reloaded for each request; the body aims for 1,500–1,750 characters when
 the sources support that detail. Methods include training/inference flow and
-available model/data settings; results prioritize 2–3 quantitative comparisons with
+available model/data settings. The methods section explicitly labels inputs,
+input requirements, outputs, and why the method works: training versus inference
+inputs, reported formats/shapes/units, preprocessing and prerequisites, and output
+representation and time horizon where relevant. Missing key details are marked as
+unreported. The explanation links the mechanism to experimental/ablation evidence,
+labels AI inferences and unsupported explanations, and provides a concise rationale
+rather than private chain-of-thought. Results prioritize 2–3 quantitative comparisons with
 named baselines, units, evaluation conditions and sample counts where available.
 Sparse sources can produce shorter summaries without invented numbers. Discovery and retrieval
 diagnostics are saved beside each `.md` summary in a matching `.json` file.
@@ -211,7 +217,7 @@ fall back to an arXiv abstract page.
 The script prints each summary and PASS/FAIL, or SKIP for nonresearch messages,
 continues after failed messages,
 and exits nonzero if a summary fails, lacks any of the four Chinese labels,
-or exceeds 1,000 characters. The runner shares the analyzer's character limit.
+or exceeds 2,000 characters. The runner shares the analyzer's character limit.
 
 `discovery_prompt.txt` controls the first AI stage for all messages, including
 those with URLs. The program reads supplied URLs before the first AI decision
